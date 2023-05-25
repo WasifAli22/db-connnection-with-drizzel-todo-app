@@ -2,7 +2,14 @@ import React from 'react'
 import { Todo } from '@/lib/drizzel';
 const getData = async () => {
     try {
-        const res = await fetch("/api/todo");
+        const res = await fetch("http://127.0.0.1:3000/api/todo", {
+            method: "GET",
+            cache:"no-store",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
         if (!res.ok) {
             throw new Error("Something wrong");
         }
@@ -15,21 +22,25 @@ const getData = async () => {
 
 }
 const TodoList = async () => {
-    const data: Todo[] = await getData()
-    return (
-        <>
-            {
-                data.map((item) => {
-                    <div className='bg-gray-100 py-4 px-4 flex items-center gap-x-3 shadow rounded-lg my-5"'>
-                        {/* circle */}
-                        <div className="h-3 w-3 bg-secondary rounded-full"></div>
-                        {/* tasktitle */}
-                        <p className="text-lg font-medium">Task 1</p>
-                    </div>
-                })
+    const res: { data: Todo[] } = await getData()
 
+    return (
+
+        <div className="max-h-[350px] overflow-auto mb-4 ">
+            {
+                res.data.map((item) => {
+                    return (
+                        <div className="bg-gray-100 py-4 px-4 flex items-center gap-x-3 shadow rounded-lg my-5">
+                            {/* Circle */}
+                            <div className="h-3 w-3 bg-secondary rounded-full"></div>
+                            {/* Task Title */}
+                            <p className="text-lg font-medium">{item.task}</p>
+                        </div>
+                    )
+                })
             }
-        </>
+
+        </div>
     )
 }
 
